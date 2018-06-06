@@ -4,7 +4,7 @@ import Datetime from 'react-datetime';
 import { Checkbox } from 'react-icheck';
 import Select from 'react-select';
 import PropTypes from 'prop-types';
-import 'icheck/skins/all.css'; // or single skin css
+import 'icheck/skins/all.css';
 import 'react-select/dist/react-select.css';
 import 'react-datetime/css/react-datetime.css';
 import 'moment/locale/pt-br';
@@ -79,6 +79,8 @@ function FormItem({
             value={parentState[model.name]}
             onChange={(value) => {
               onSelectChange(model.name)(value);
+            }}
+            onBlur={() => {
               validateField(model.name, parentState[model.name], checkRequirement);
             }}
             {...model.props}
@@ -96,6 +98,8 @@ function FormItem({
             value={parentState[model.name]}
             onChange={(value) => {
               onMultiSelectChange(model.name)(value);
+            }}
+            onBlur={() => {
               validateField(model.name, parentState[model.name], checkRequirement);
             }}
             {...model.props}
@@ -111,6 +115,8 @@ function FormItem({
             value={parentState[model.name]}
             onChange={(val) => {
               onAsyncChange(val, model.name);
+            }}
+            onBlur={() => {
               validateField(model.name, parentState[model.name], checkRequirement);
             }}
             onValueClick={model.onValueClick}
