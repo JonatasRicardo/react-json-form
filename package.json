@@ -1,0 +1,47 @@
+{
+  "name": "react-json-form",
+  "version": "1.0.0",
+  "author": "Jônatas Santos <jonatasricardo90@gmail.com>",
+  "description": "A React component that generates forms from a json",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JonatasRicardo/react-json-form"
+  },
+  "keywords": [
+    "react",
+    "form",
+    "json",
+    "bootstrap"
+  ],
+  "dependencies": {
+    "admin-lte": "^2.3.0",
+    "axios": "^0.16.2",
+    "bootstrap": "^4.1.1",
+    "font-awesome": "^4.7.0",
+    "hashids": "^1.1.4",
+    "lodash": "^4.17.10",
+    "moment": "^2.22.0",
+    "prop-types": "^15.6.1",
+    "react": "^15.6.1",
+    "react-bootstrap": "^0.32.1",
+    "react-datetime": "^2.14.0",
+    "react-dom": "^15.6.1",
+    "react-icheck": "^0.3.8",
+    "react-select": "^1.0.0-rc.10"
+  },
+  "devDependencies": {
+    "eslint": "^4.9.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-react": "^7.4.0",
+    "react-scripts": "1.0.13"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "license": "MIT"
+}
