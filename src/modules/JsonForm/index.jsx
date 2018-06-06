@@ -15,7 +15,7 @@ import FormPanel from './FormPanel';
 import './style.css';
 
 const validationExemple = (val) => {
-  if (val !== 'nome') {
+  if (val !== 'teste') {
     return { valid: true, message: 'ok' };
   }
   return { valid: false, message: 'preencha o campo corretamente' };
