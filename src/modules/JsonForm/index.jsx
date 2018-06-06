@@ -245,6 +245,7 @@ class JsonForm extends Component {
 
     this.onChange = this.onChange.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
+    this.onAsyncChange = this.onAsyncChange.bind(this);
     this.onSelectChange = this.onSelectChange.bind(this);
     this.onMultiSelectChange = this.onMultiSelectChange.bind(this);
     this.onDateTimeChange = this.onDateTimeChange.bind(this);
