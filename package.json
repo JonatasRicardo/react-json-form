@@ -39,6 +39,9 @@
     "eslint-plugin-react": "^7.4.0",
     "react-scripts": "1.0.13"
   },
+  "peerDependencies": {
+    "react": "^15.5.4"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
