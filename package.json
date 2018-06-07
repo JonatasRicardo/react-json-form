@@ -15,19 +15,13 @@
   ],
   "main": "dist/JsonForm/index.js",
   "dependencies": {
-    "admin-lte": "^2.3.0",
-    "axios": "^0.16.2",
-    "bootstrap": "^4.1.1",
-    "font-awesome": "^4.7.0",
     "hashids": "^1.1.4",
+    "axios": "^0.16.2",
     "icheck": "^1.0.2",
     "lodash": "^4.17.10",
     "moment": "^2.22.0",
-    "prop-types": "^15.6.1",
-    "react": "^15.6.1",
     "react-bootstrap": "^0.32.1",
     "react-datetime": "^2.14.0",
-    "react-dom": "^15.6.1",
     "react-icheck": "^0.3.8",
     "react-select": "^1.0.0-rc.10",
     "babel-runtime": "^6.23.0"
@@ -51,6 +45,9 @@
     "react-scripts": "1.0.13"
   },
   "peerDependencies": {
+    "admin-lte": "^2.3.0",
+    "bootstrap": "^4.1.1",
+    "font-awesome": "^4.7.0",
     "react": "^15.0.0 || ^16.0.0",
     "react-dom": "^15.0.0 || ^16.0.0",
     "prop-types": "^15.5.4"
