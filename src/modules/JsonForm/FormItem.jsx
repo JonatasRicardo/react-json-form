@@ -9,7 +9,6 @@ import 'react-select/dist/react-select.css';
 import 'react-datetime/css/react-datetime.css';
 import 'moment/locale/pt-br';
 import { keyIndex } from '../Helpers';
-import './style.css';
 
 const propTypes = {
   model: PropTypes.shape({}).isRequired,

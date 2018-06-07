@@ -1,13 +1,13 @@
 (function (global, factory) {
   if (typeof define === "function" && define.amd) {
-    define(['exports', 'react', 'react-bootstrap', 'prop-types', 'axios', 'lodash', '../Helpers', './FormArea', './FormPanel', 'bootstrap/dist/css/bootstrap.min.css', 'font-awesome/css/font-awesome.min.css', 'admin-lte/dist/css/AdminLTE.min.css', 'react-select/dist/react-select.css', 'react-datetime/css/react-datetime.css', 'moment/locale/pt-br', './style.css'], factory);
+    define(['exports', 'react', 'react-bootstrap', 'prop-types', 'axios', 'lodash', '../Helpers', './FormArea', './FormPanel', 'moment/locale/pt-br', 'react-select/dist/react-select.css', 'react-datetime/css/react-datetime.css'], factory);
   } else if (typeof exports !== "undefined") {
-    factory(exports, require('react'), require('react-bootstrap'), require('prop-types'), require('axios'), require('lodash'), require('../Helpers'), require('./FormArea'), require('./FormPanel'), require('bootstrap/dist/css/bootstrap.min.css'), require('font-awesome/css/font-awesome.min.css'), require('admin-lte/dist/css/AdminLTE.min.css'), require('react-select/dist/react-select.css'), require('react-datetime/css/react-datetime.css'), require('moment/locale/pt-br'), require('./style.css'));
+    factory(exports, require('react'), require('react-bootstrap'), require('prop-types'), require('axios'), require('lodash'), require('../Helpers'), require('./FormArea'), require('./FormPanel'), require('moment/locale/pt-br'), require('react-select/dist/react-select.css'), require('react-datetime/css/react-datetime.css'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod.exports, global.react, global.reactBootstrap, global.propTypes, global.axios, global.lodash, global.Helpers, global.FormArea, global.FormPanel, global.bootstrapMin, global.fontAwesomeMin, global.AdminLTEMin, global.reactSelect, global.reactDatetime, global.ptBr, global.style);
+    factory(mod.exports, global.react, global.reactBootstrap, global.propTypes, global.axios, global.lodash, global.Helpers, global.FormArea, global.FormPanel, global.ptBr, global.reactSelect, global.reactDatetime);
     global.index = mod.exports;
   }
 })(this, function (exports, _react, _reactBootstrap, _propTypes, _axios, _lodash, _Helpers, _FormArea, _FormPanel) {

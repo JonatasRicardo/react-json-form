@@ -1,13 +1,13 @@
 (function (global, factory) {
   if (typeof define === "function" && define.amd) {
-    define(['react', 'react-dom', '../JsonForm'], factory);
+    define(['react', 'react-dom', '../JsonForm', '../JsonForm/styles/defaults.css'], factory);
   } else if (typeof exports !== "undefined") {
-    factory(require('react'), require('react-dom'), require('../JsonForm'));
+    factory(require('react'), require('react-dom'), require('../JsonForm'), require('../JsonForm/styles/defaults.css'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(global.react, global.reactDom, global.JsonForm);
+    factory(global.react, global.reactDom, global.JsonForm, global.defaults);
     global.index = mod.exports;
   }
 })(this, function (_react, _reactDom, _JsonForm) {
@@ -23,7 +23,8 @@
     };
   }
 
-  (0, _reactDom.render)(_react2.default.createElement(_JsonForm2.default, null), document.getElementById('app')); /* eslint-env browser */
+  /* eslint-env browser */
 
   /* Basics */
+  (0, _reactDom.render)(_react2.default.createElement(_JsonForm2.default, null), document.getElementById('app'));
 });

@@ -3,16 +3,13 @@ import { Row, Col, Button } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import _ from 'lodash';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'font-awesome/css/font-awesome.min.css';
-import 'admin-lte/dist/css/AdminLTE.min.css';
+import 'moment/locale/pt-br';
 import 'react-select/dist/react-select.css';
 import 'react-datetime/css/react-datetime.css';
-import 'moment/locale/pt-br';
 import { keyIndex, flatten, unflatten } from '../Helpers';
 import FormArea from './FormArea';
 import FormPanel from './FormPanel';
-import './style.css';
+
 
 const validationExemple = (val) => {
   if (val !== 'teste') {

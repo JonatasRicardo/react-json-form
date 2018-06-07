@@ -1,13 +1,13 @@
 (function (global, factory) {
   if (typeof define === "function" && define.amd) {
-    define(['exports', 'react', 'react-bootstrap', 'react-datetime', 'react-icheck', 'react-select', 'prop-types', '../Helpers', 'icheck/skins/all.css', 'react-select/dist/react-select.css', 'react-datetime/css/react-datetime.css', 'moment/locale/pt-br', './style.css'], factory);
+    define(['exports', 'react', 'react-bootstrap', 'react-datetime', 'react-icheck', 'react-select', 'prop-types', '../Helpers', 'icheck/skins/all.css', 'react-select/dist/react-select.css', 'react-datetime/css/react-datetime.css', 'moment/locale/pt-br'], factory);
   } else if (typeof exports !== "undefined") {
-    factory(exports, require('react'), require('react-bootstrap'), require('react-datetime'), require('react-icheck'), require('react-select'), require('prop-types'), require('../Helpers'), require('icheck/skins/all.css'), require('react-select/dist/react-select.css'), require('react-datetime/css/react-datetime.css'), require('moment/locale/pt-br'), require('./style.css'));
+    factory(exports, require('react'), require('react-bootstrap'), require('react-datetime'), require('react-icheck'), require('react-select'), require('prop-types'), require('../Helpers'), require('icheck/skins/all.css'), require('react-select/dist/react-select.css'), require('react-datetime/css/react-datetime.css'), require('moment/locale/pt-br'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod.exports, global.react, global.reactBootstrap, global.reactDatetime, global.reactIcheck, global.reactSelect, global.propTypes, global.Helpers, global.all, global.reactSelect, global.reactDatetime, global.ptBr, global.style);
+    factory(mod.exports, global.react, global.reactBootstrap, global.reactDatetime, global.reactIcheck, global.reactSelect, global.propTypes, global.Helpers, global.all, global.reactSelect, global.reactDatetime, global.ptBr);
     global.FormItem = mod.exports;
   }
 })(this, function (exports, _react, _reactBootstrap, _reactDatetime, _reactIcheck, _reactSelect, _propTypes, _Helpers) {

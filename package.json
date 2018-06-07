@@ -24,7 +24,13 @@
     "react-datetime": "^2.14.0",
     "react-icheck": "^0.3.8",
     "react-select": "^1.0.0-rc.10",
-    "babel-runtime": "^6.23.0"
+    "babel-runtime": "^6.23.0",
+    "admin-lte": "^2.3.0",
+    "bootstrap": "^4.1.1",
+    "font-awesome": "^4.7.0",
+    "prop-types": "^15.5.4",
+    "react": "^15.0.0 || ^16.0.0",
+    "react-dom": "^15.0.0 || ^16.0.0"
   },
   "devDependencies": {
     "eslint": "^4.9.0",
@@ -45,12 +51,8 @@
     "react-scripts": "1.0.13"
   },
   "peerDependencies": {
-    "admin-lte": "^2.3.0",
-    "bootstrap": "^4.1.1",
-    "font-awesome": "^4.7.0",
     "react": "^15.0.0 || ^16.0.0",
-    "react-dom": "^15.0.0 || ^16.0.0",
-    "prop-types": "^15.5.4"
+    "react-dom": "^15.0.0 || ^16.0.0"
   },
   "scripts": {
     "prepublishOnly": "babel --plugins transform-es2015-modules-umd src/modules --ignore __tests__ --out-dir ./dist --copy-files",
