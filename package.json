@@ -56,7 +56,7 @@
     "prop-types": "^15.5.4"
   },
   "scripts": {
-    "prepublishOnly": "babel --plugins transform-es2015-modules-umd src/modules --ignore __tests__ --out-dir ./dist",
+    "prepublishOnly": "babel --plugins transform-es2015-modules-umd src/modules --ignore __tests__ --out-dir ./dist --copy-files",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
