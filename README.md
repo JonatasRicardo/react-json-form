@@ -39,7 +39,7 @@ Note que temos 4 propriedades básicas:
 
 | Prop   |      Descrição      |  Exemplo |
 |----------|-------------|------|
-| layout |  Array objetos que definem as áreas, os campos e as condições de validação. | <a href="#Layout">exemplo</a>   |
+| layout |  Array objetos que definem as áreas, os campos e as condições de validação. | <a href="#layout">exemplo</a>   |
 | onSuccess |  função que ao formulário passar por todas as validações recebe o json do formulário preenchido e o novo layout com os valores atualizados   |  `(data, layout) => { cosole.log(data, layout); }` |
 | onError | função que ao formulário falhar em validação recebe o json do formulário preenchido e o novo layout com os valores atualizados |  `(data, layout) => { cosole.log(data, layout); }` |
 | initialData | Json com os valores iniciais do formulário | `{name: "Foo", phone: "bar"}` |
