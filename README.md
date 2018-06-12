@@ -21,7 +21,7 @@ import 'react-json-form/dist/JsonForm/styles/defaults.css';
 #### Demonstração Básica 
 Para demonstrar as possibilidades do **React Json Form** se não for passado nenhum parâmetro ao componente ele irá renderizar um formulário de exemplo.
 ```
-<Json Form />
+<JsonForm />
 ```
 ![React Json Form Exemple](./react-json-form-exemple.png)
 
