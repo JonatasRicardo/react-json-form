@@ -94,7 +94,19 @@
             return _react2.default.createElement(
               _reactBootstrap.Col,
               _extends({ key: col.ID_model }, col.colProps),
-              _react2.default.createElement(_FormItem2.default, {
+              !col.custom && col.model && _react2.default.createElement(_FormItem2.default, {
+                model: col.model,
+                parentState: parentState,
+                validateField: validateField,
+                onChange: onChange,
+                onSelectChange: onSelectChange,
+                onMultiSelectChange: onMultiSelectChange,
+                onAsyncChange: onAsyncChange,
+                onDateTimeChange: onDateTimeChange,
+                onInputChange: onInputChange,
+                requirementMessage: requirementMessage
+              }),
+              col.custom && _react2.default.createElement(col.custom, {
                 model: col.model,
                 parentState: parentState,
                 validateField: validateField,

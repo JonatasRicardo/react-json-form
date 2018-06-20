@@ -1,13 +1,13 @@
 (function (global, factory) {
   if (typeof define === "function" && define.amd) {
-    define(['react', 'react-dom', '../JsonForm', '../JsonForm/styles/defaults.css'], factory);
+    define(['react', 'react-dom', '../JsonForm', '../JsonForm/styles/defaults.dev.css'], factory);
   } else if (typeof exports !== "undefined") {
-    factory(require('react'), require('react-dom'), require('../JsonForm'), require('../JsonForm/styles/defaults.css'));
+    factory(require('react'), require('react-dom'), require('../JsonForm'), require('../JsonForm/styles/defaults.dev.css'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(global.react, global.reactDom, global.JsonForm, global.defaults);
+    factory(global.react, global.reactDom, global.JsonForm, global.defaultsDev);
     global.index = mod.exports;
   }
 })(this, function (_react, _reactDom, _JsonForm) {

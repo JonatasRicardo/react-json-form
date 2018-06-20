@@ -31,6 +31,18 @@
     };
   }
 
+  function _toConsumableArray(arr) {
+    if (Array.isArray(arr)) {
+      for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
+        arr2[i] = arr[i];
+      }
+
+      return arr2;
+    } else {
+      return Array.from(arr);
+    }
+  }
+
   var _extends = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
@@ -86,7 +98,8 @@
     var hasError = valid === false;
     var statusClass = hasError && 'has-error';
     var formItem = null;
-
+    var options = void 0;
+    var newOptions = void 0;
     if (model.type) {
       switch (model.type) {
         case 'text':
@@ -100,7 +113,7 @@
             onBlur: function onBlur() {
               validateField(model.name, parentState[model.name], checkRequirement);
             }
-          }, model.props));
+          }, model.inputProps));
           break;
 
         case 'select':
@@ -115,15 +128,21 @@
             onBlur: function onBlur() {
               validateField(model.name, parentState[model.name], checkRequirement);
             }
-          }, model.props));
+          }, model.inputProps));
           break;
 
         case 'multi':
-          formItem = _react2.default.createElement(_reactSelect2.default, _extends({
+          options = model.options || [];
+          newOptions = Array.isArray(parentState[model.name]) ? parentState[model.name].map(function (val) {
+            return { label: val, value: val };
+          }) : options;
+
+          options = [].concat(_toConsumableArray(options), _toConsumableArray(newOptions));
+          formItem = _react2.default.createElement(_reactSelect2.default.Creatable, _extends({
             noResultsText: 'Sem Resultados',
             placeholder: model.placeholder || 'Selecione',
             multi: true,
-            options: model.options,
+            options: options,
             value: parentState[model.name],
             onChange: function onChange(value) {
               onMultiSelectChange(model.name)(value);
@@ -131,7 +150,29 @@
             onBlur: function onBlur() {
               validateField(model.name, parentState[model.name], checkRequirement);
             }
-          }, model.props));
+          }, model.inputProps));
+          break;
+
+        case 'multiCreatable':
+          options = model.options || [];
+          newOptions = Array.isArray(parentState[model.name]) ? parentState[model.name].map(function (val) {
+            return { label: val, value: val };
+          }) : options;
+
+          options = [].concat(_toConsumableArray(options), _toConsumableArray(newOptions));
+          formItem = _react2.default.createElement(_reactSelect2.default.Creatable, _extends({
+            noResultsText: 'Sem Resultados',
+            placeholder: model.placeholder || 'multiCreatable',
+            multi: true,
+            options: options,
+            value: parentState[model.name],
+            onChange: function onChange(value) {
+              onMultiSelectChange(model.name)(value);
+            },
+            onBlur: function onBlur() {
+              validateField(model.name, parentState[model.name], checkRequirement);
+            }
+          }, model.inputProps));
           break;
 
         case 'asyncSelect':
@@ -150,7 +191,7 @@
             loadOptions: model.loadOptions,
             backspaceRemoves: model.backspaceRemoves,
             loadingPlaceholder: 'carregando'
-          }, model.props));
+          }, model.inputProps));
           break;
 
         case 'textarea':
@@ -166,11 +207,11 @@
               validateField(model.name, parentState[model.name], checkRequirement);
             },
             rows: 4
-          }, model.props));
+          }, model.inputProps));
           break;
 
         case 'datetime':
-          formItem = _react2.default.createElement(_reactDatetime2.default, _extends({
+          formItem = _react2.default.createElement(_reactDatetime2.default, {
             defaultText: 'Selecione data e hora',
             locale: 'pt-br',
             defaultValue: '',
@@ -178,12 +219,13 @@
             onChange: function onChange(val) {
               onDateTimeChange(val, model.name);
               validateField(model.name, parentState[model.name], checkRequirement);
-            }
-          }, model.props));
+            },
+            inputProps: model.inputProps
+          });
           break;
 
         case 'date':
-          formItem = _react2.default.createElement(_reactDatetime2.default, _extends({
+          formItem = _react2.default.createElement(_reactDatetime2.default, {
             defaultText: 'Selecione a data',
             DateFormat: 'DD/MM/YY',
             timeFormat: false,
@@ -194,12 +236,13 @@
               // console.log('Datetime::Datetime::val', val);
               onDateTimeChange(val, model.name);
               validateField(model.name, parentState[model.name], checkRequirement);
-            }
-          }, model.props));
+            },
+            inputProps: model.inputProps
+          });
           break;
 
         case 'time':
-          formItem = _react2.default.createElement(_reactDatetime2.default, _extends({
+          formItem = _react2.default.createElement(_reactDatetime2.default, {
             defaultText: 'Selecione o hor\xE1rio',
             timeFormat: 'hh:mm',
             dateFormat: false,
@@ -207,27 +250,28 @@
             onChange: function onChange(val) {
               onDateTimeChange(val, model.name);
               validateField(model.name, parentState[model.name], checkRequirement);
-            }
-          }, model.props));
+            },
+            inputProps: model.inputProps
+          });
           break;
 
         case 'checkbox':
           formItem = _react2.default.createElement(
             _reactBootstrap.Col,
             null,
-            (0, _Helpers.keyIndex)(model.options, 42).map(function (options) {
+            (0, _Helpers.keyIndex)(model.options, 42).map(function (opt) {
               return _react2.default.createElement(_reactIcheck.Checkbox, _extends({
-                key: options.ID_label,
+                key: opt.ID_label,
                 checkboxClass: 'icheckbox_square-blue',
-                checked: parentState[model.name] === options.value,
+                checked: parentState[model.name] === opt.value,
                 onChange: function onChange() {
-                  var value = parentState[model.name] === options.value ? '' : options.value;
+                  var value = parentState[model.name] === opt.value ? '' : opt.value;
                   onInputChange(value, model.name);
                   validateField(model.name, parentState[model.name], checkRequirement);
                 },
                 increaseArea: '20%',
-                label: '&nbsp;&nbsp;' + options.label + '&nbsp;&nbsp;&nbsp;&nbsp;'
-              }, model.props));
+                label: '&nbsp;&nbsp;' + opt.label + '&nbsp;&nbsp;&nbsp;&nbsp;'
+              }, model.inputProps));
             })
           );
           break;

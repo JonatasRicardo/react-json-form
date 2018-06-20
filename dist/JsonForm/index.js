@@ -165,6 +165,7 @@
     // getValues: PropTypes.func,
     saveForm: _propTypes2.default.bool,
     initialData: _propTypes2.default.shape({}),
+    tabs: _propTypes2.default.bool,
     layout: _propTypes2.default.arrayOf(_propTypes2.default.shape({
       title: _propTypes2.default.string,
       grid: _propTypes2.default.arrayOf(_propTypes2.default.arrayOf(_propTypes2.default.shape({
@@ -183,17 +184,25 @@
           xs: _propTypes2.default.number
         })
       })))
-    }))
+    })),
+    children: _propTypes2.default.oneOfType([_propTypes2.default.arrayOf(_propTypes2.default.node), _propTypes2.default.node, _propTypes2.default.arrayOf(_propTypes2.default.element), _propTypes2.default.element])
   };
 
   var defaultProps = {
-    onSuccess: function onSuccess() {},
-    onError: function onError() {},
+    onSuccess: function onSuccess(data, layout) {
+      console.log('JsonForm.onSuccess.data', data);
+      console.log('JsonForm.onSuccess.layout', layout);
+    },
+    onError: function onError(data, layout) {
+      console.log('JsonForm.onError.data', data);
+      console.log('JsonForm.onError.layout', layout);
+    },
     multidata: [],
     // getValues: () => {},
     saveForm: false,
     initialData: {},
     displayButtons: true,
+    tabs: false,
     layout: [{
       title: 'Text Fields',
       grid: [[{
@@ -204,7 +213,9 @@
           label: 'Text',
           required: true,
           validation: function validation(val) {
-            if (val.length < 10) {
+            if (!val) {
+              return { valid: false, message: 'erro inesperado' };
+            } else if (val.length < 10) {
               return { valid: false, message: 'O campo nome deve conter mais de 10 caracteres' };
             }
             return { valid: true, message: 'ok' };
@@ -319,7 +330,8 @@
         },
         colProps: { md: 3 }
       }]]
-    }]
+    }],
+    children: null
   };
 
   var JsonForm = function (_Component) {
@@ -362,6 +374,7 @@
       _this.listFormFields = _this.listFormFields.bind(_this);
       _this.extractModelFromLayout = _this.extractModelFromLayout.bind(_this);
       _this.extractLayoutFromFormData = _this.extractLayoutFromFormData.bind(_this);
+      _this.formContent = _this.formContent.bind(_this);
       return _this;
     }
 
@@ -451,7 +464,7 @@
           area.grid.forEach(function (rows) {
             rows.forEach(function (row) {
               if (row.model) {
-                model[row.model.name] = row.model.value || '';
+                model[row.model.name] = row.model.value === undefined ? '' : row.model.value;
                 model['validation_' + row.model.name] = {};
                 validation[row.model.name] = {
                   rule: row.model.validation || function () {
@@ -532,12 +545,12 @@
 
                 if (multidata.indexOf(multfield) > -1 && formData[multfield]) {
                   try {
-                    row.model.value = formData[multfield][index][newName] || '';
+                    row.model.value = formData[multfield][index][newName] === undefined ? '' : formData[multfield][index][newName];
                   } catch (error) {
                     row.model.value = '';
                   }
                 } else {
-                  row.model.value = formData[newName] || '';
+                  row.model.value = formData[newName] === undefined ? '' : formData[newName];
                 }
                 row.model.name = newName;
               }
@@ -658,7 +671,7 @@
             result.requirementError = validation[name].required && value === '';
             if (requirementMessage && result.requirementError) {
               result.valid = false;
-              result.message = 'esse campo é obrigatório';
+              result.message = 'este campo é obrigatório';
             }
             this.setState(_defineProperty({}, 'validation_' + name, result));
           } catch (error) {
@@ -706,9 +719,117 @@
         });
       }
     }, {
+      key: 'formContent',
+      value: function formContent(_ref) {
+        var _this6 = this;
+
+        var area = _ref.area,
+            multidata = _ref.multidata,
+            utilitiesNewLayout = _ref.utilitiesNewLayout;
+
+        return _react2.default.createElement(
+          'div',
+          null,
+          area.grid && _react2.default.createElement(_FormArea2.default, {
+            area: area,
+            title: area.title,
+            id: area.ID_grid,
+            bsStyle: area.bsStyle,
+            parentState: this.state,
+            validateField: this.validateField,
+            onChange: this.onChange,
+            onSelectChange: this.onSelectChange,
+            onMultiSelectChange: this.onMultiSelectChange,
+            onAsyncChange: this.onAsyncChange,
+            onDateTimeChange: this.onDateTimeChange,
+            onInputChange: this.onInputChange,
+            requirementMessage: this.props.saveForm
+          }),
+          area.content && area.content(),
+          multidata.map(function (multi, i) {
+            return area[multi] && _react2.default.createElement(
+              _FormPanel2.default,
+              { title: 'itens', ID: area['ID_' + multi] },
+              (0, _Helpers.keyIndex)(area[multi], 5 + i).map(function (subArea, j) {
+                return _react2.default.createElement(
+                  'div',
+                  null,
+                  _react2.default.createElement(
+                    _FormArea2.default,
+                    {
+                      area: subArea,
+                      title: subArea.title,
+                      id: subArea.ID_grid,
+                      bsStyle: subArea.bsStyle,
+                      parentState: _this6.state,
+                      validateField: _this6.validateField,
+                      onChange: _this6.onChange,
+                      onSelectChange: _this6.onSelectChange,
+                      onMultiSelectChange: _this6.onMultiSelectChange,
+                      onAsyncChange: _this6.onAsyncChange,
+                      onDateTimeChange: _this6.onDateTimeChange,
+                      onInputChange: _this6.onInputChange,
+                      requirementMessage: _this6.props.saveForm
+                    },
+                    area[multi].length > 1 && _react2.default.createElement(
+                      'div',
+                      { className: 'box-footer text-right' },
+                      _react2.default.createElement(
+                        _reactBootstrap.Button,
+                        {
+                          bsStyle: 'primary',
+                          className: 'btn-flat btn-danger',
+                          onClick: function onClick() {
+                            _this6.removeMultidata(multi, j, utilitiesNewLayout);
+                          }
+                        },
+                        _react2.default.createElement('i', { className: 'fa fa-times' }),
+                        ' Remover'
+                      )
+                    )
+                  ),
+                  _react2.default.createElement('br', null)
+                );
+              }),
+              _react2.default.createElement(
+                _reactBootstrap.Col,
+                { xs: 12, md: 12, className: 'text-center' },
+                _react2.default.createElement(
+                  'div',
+                  { className: 'box-footer' },
+                  _react2.default.createElement(
+                    _reactBootstrap.Button,
+                    {
+                      bsStyle: 'primary',
+                      className: 'btn-flat',
+                      onClick: function onClick() {
+                        _this6.addMultidata(multi, utilitiesNewLayout);
+                      }
+                    },
+                    _react2.default.createElement('i', { className: 'fa fa-plus' }),
+                    ' Adicionar'
+                  )
+                )
+              )
+            );
+          })
+        );
+      }
+    }, {
       key: 'render',
       value: function render() {
-        var _this6 = this;
+        var _this7 = this;
+
+        var children = this.props.children;
+
+
+        var childrenWithProps = _react2.default.Children.map(children, function (child) {
+          return _react2.default.cloneElement(child, {
+            JF_clearForm: _this7.clearForm,
+            JF_saveForm: _this7.saveForm,
+            JF_getFormData: _this7.listFormFields
+          });
+        });
 
         return _react2.default.createElement(
           'form',
@@ -719,99 +840,39 @@
             _react2.default.createElement(
               _reactBootstrap.Col,
               { md: 9 },
-              (0, _Helpers.keyIndex)(JsonForm.treeNamingFields(this.extractLayoutFromFormData(this.state.utilities_formData || this.props.initialData, this.state.utilities_newLayout)), 1).map(function (area) {
-                return _react2.default.createElement(
-                  'div',
-                  null,
-                  area.grid && _react2.default.createElement(_FormArea2.default, {
+              this.props.tabs && _react2.default.createElement(
+                _reactBootstrap.Tabs,
+                { id: 'uncontrolled-tab-example' },
+                (0, _Helpers.keyIndex)(JsonForm.treeNamingFields(this.extractLayoutFromFormData(this.state.utilities_formData || this.props.initialData, this.state.utilities_newLayout)), 1).map(function (area, i) {
+                  return _react2.default.createElement(
+                    _reactBootstrap.Tab,
+                    { eventKey: area.tab || i, title: area.tabTitle },
+                    _react2.default.createElement(_this7.formContent, {
+                      key: area.ID_grid || area.ID_title,
+                      area: area,
+                      multidata: _this7.props.multidata,
+                      utilitiesNewLayout: _this7.state.utilities_newLayout
+                    })
+                  );
+                })
+              ),
+              !this.props.tabs && _react2.default.createElement(
+                'div',
+                null,
+                (0, _Helpers.keyIndex)(JsonForm.treeNamingFields(this.extractLayoutFromFormData(this.state.utilities_formData || this.props.initialData, this.state.utilities_newLayout)), 1).map(function (area) {
+                  return _react2.default.createElement(_this7.formContent, {
+                    key: area.ID_grid || area.ID_title,
                     area: area,
-                    title: area.title,
-                    id: area.ID_grid,
-                    bsStyle: area.bsStyle,
-                    parentState: _this6.state,
-                    validateField: _this6.validateField,
-                    onChange: _this6.onChange,
-                    onSelectChange: _this6.onSelectChange,
-                    onMultiSelectChange: _this6.onMultiSelectChange,
-                    onAsyncChange: _this6.onAsyncChange,
-                    onDateTimeChange: _this6.onDateTimeChange,
-                    onInputChange: _this6.onInputChange,
-                    requirementMessage: _this6.props.saveForm
-                  }),
-                  _this6.props.multidata.map(function (multi, i) {
-                    return area[multi] && _react2.default.createElement(
-                      _FormPanel2.default,
-                      { title: 'itens', ID: area['ID_' + multi] },
-                      (0, _Helpers.keyIndex)(area[multi], 5 + i).map(function (subArea, j) {
-                        return _react2.default.createElement(
-                          'div',
-                          null,
-                          _react2.default.createElement(
-                            _FormArea2.default,
-                            {
-                              area: subArea,
-                              title: subArea.title,
-                              id: subArea.ID_grid,
-                              bsStyle: subArea.bsStyle,
-                              parentState: _this6.state,
-                              validateField: _this6.validateField,
-                              onChange: _this6.onChange,
-                              onSelectChange: _this6.onSelectChange,
-                              onMultiSelectChange: _this6.onMultiSelectChange,
-                              onAsyncChange: _this6.onAsyncChange,
-                              onDateTimeChange: _this6.onDateTimeChange,
-                              onInputChange: _this6.onInputChange,
-                              requirementMessage: _this6.props.saveForm
-                            },
-                            area[multi].length > 1 && _react2.default.createElement(
-                              'div',
-                              { className: 'box-footer text-right' },
-                              _react2.default.createElement(
-                                _reactBootstrap.Button,
-                                {
-                                  bsStyle: 'primary',
-                                  className: 'btn-flat btn-danger',
-                                  onClick: function onClick() {
-                                    _this6.removeMultidata(multi, j, _this6.state.utilities_newLayout);
-                                  }
-                                },
-                                _react2.default.createElement('i', { className: 'fa fa-times' }),
-                                ' Remover'
-                              )
-                            )
-                          ),
-                          _react2.default.createElement('br', null)
-                        );
-                      }),
-                      _react2.default.createElement(
-                        _reactBootstrap.Col,
-                        { xs: 12, md: 12, className: 'text-center' },
-                        _react2.default.createElement(
-                          'div',
-                          { className: 'box-footer' },
-                          _react2.default.createElement(
-                            _reactBootstrap.Button,
-                            {
-                              bsStyle: 'primary',
-                              className: 'btn-flat',
-                              onClick: function onClick() {
-                                _this6.addMultidata(multi, _this6.state.utilities_newLayout);
-                              }
-                            },
-                            _react2.default.createElement('i', { className: 'fa fa-plus' }),
-                            ' Adicionar'
-                          )
-                        )
-                      )
-                    );
-                  })
-                );
-              })
+                    multidata: _this7.props.multidata,
+                    utilitiesNewLayout: _this7.state.utilities_newLayout
+                  });
+                })
+              )
             ),
-            this.props.displayButtons && _react2.default.createElement(
+            _react2.default.createElement(
               _reactBootstrap.Col,
               { md: 3 },
-              _react2.default.createElement(
+              this.props.displayButtons && _react2.default.createElement(
                 'div',
                 { className: 'box box-primary' },
                 _react2.default.createElement(
@@ -820,7 +881,7 @@
                   _react2.default.createElement(
                     'h3',
                     { className: 'box-title' },
-                    'Informa\xE7\xF5es e A\xE7\xF5es'
+                    'A\xE7\xF5es'
                   )
                 ),
                 _react2.default.createElement(
@@ -848,7 +909,8 @@
                     ' Salvar'
                   )
                 )
-              )
+              ),
+              childrenWithProps
             )
           )
         );
