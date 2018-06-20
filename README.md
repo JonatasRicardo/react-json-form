@@ -43,7 +43,7 @@ Para demonstrar as possibilidades do **React Json Form** se não for passado nen
 | initialData |   *object*   |     | Json com os valores iniciais do formulário | `{name: "Foo", phone: "bar"}` |
 | displayButtons |   *boolean*   |   `true`  | define a exibição ou não dos botões padrão do componente (Limpar e Salvar)  | `true` |
 | tabs |   *boolean*   |   `false`  | define o uso ou não de abas no componente.  <a href="#tabs">Mais detalhes</a>| `true` |
-| children |   *React Component*   |   `false`  | Compoententes filhos que são renderizados na parte lateral do formulário. <a href="#children">Mais detalhes</a> | `<div>:)</div>` |
+| children |   *React Component*   |   `false`  | Compoententes filhos que são renderizados na parte lateral do formulário. <a href="#children-botões-personalizados">Mais detalhes</a> | `<div>:)</div>` |
 
 ___
 
@@ -147,7 +147,7 @@ Abaixo podemos ver a estrutura de uma área:
             <tr>
               <td>custom</td>
               <td><i>function</i></td>
-              <td>Essa propriedade permite que um componente personalizado seja inserido em uma coluna. Pode ser um componente estático ou um novo tipo de campo. <a href="#custom">Mais detalhes</a>.
+              <td>Essa propriedade permite que um componente personalizado seja inserido em uma coluna. Pode ser um componente estático ou um novo tipo de campo. <a href="#custom-inputs-personalizados">Mais detalhes</a>.
               <br><i>Importante: ao utilizar essa propriedade, o campo padrão do formulário não será exibido.<i>
               </td>
             </tr>
