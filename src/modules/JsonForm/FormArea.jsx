@@ -55,7 +55,7 @@ function FormArea({
         <Row key={row.ID_0}>
           {keyIndex(row, 35).map(col => (
             <Col key={col.ID_model} {...col.colProps}>
-              <FormItem
+              {(!col.custom && col.model) && <FormItem
                 model={col.model}
                 parentState={parentState}
                 validateField={validateField}
@@ -66,7 +66,19 @@ function FormArea({
                 onDateTimeChange={onDateTimeChange}
                 onInputChange={onInputChange}
                 requirementMessage={requirementMessage}
-              />
+              />}
+              {col.custom && <col.custom
+                model={col.model}
+                parentState={parentState}
+                validateField={validateField}
+                onChange={onChange}
+                onSelectChange={onSelectChange}
+                onMultiSelectChange={onMultiSelectChange}
+                onAsyncChange={onAsyncChange}
+                onDateTimeChange={onDateTimeChange}
+                onInputChange={onInputChange}
+                requirementMessage={requirementMessage}
+              />}
             </Col>
           ))}
         </Row>

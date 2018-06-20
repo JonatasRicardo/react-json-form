@@ -49,7 +49,8 @@ function FormItem({
   const hasError = (valid === false);
   const statusClass = hasError && 'has-error';
   let formItem = null;
-
+  let options;
+  let newOptions;
   if (model.type) {
     switch (model.type) {
       case 'text':
@@ -64,7 +65,7 @@ function FormItem({
             onBlur={() => {
               validateField(model.name, parentState[model.name], checkRequirement);
             }}
-            {...model.props}
+            {...model.inputProps}
           />
         );
         break;
@@ -82,18 +83,24 @@ function FormItem({
             onBlur={() => {
               validateField(model.name, parentState[model.name], checkRequirement);
             }}
-            {...model.props}
+            {...model.inputProps}
           />
         );
         break;
 
       case 'multi':
+        options = model.options || [];
+        newOptions = Array.isArray(parentState[model.name]) ?
+          parentState[model.name].map(val => ({ label: val, value: val })) :
+          options;
+
+        options = [...options, ...newOptions];
         formItem = (
-          <Select
+          <Select.Creatable
             noResultsText="Sem Resultados"
             placeholder={model.placeholder || 'Selecione'}
             multi
-            options={model.options}
+            options={options}
             value={parentState[model.name]}
             onChange={(value) => {
               onMultiSelectChange(model.name)(value);
@@ -101,7 +108,33 @@ function FormItem({
             onBlur={() => {
               validateField(model.name, parentState[model.name], checkRequirement);
             }}
-            {...model.props}
+            {...model.inputProps}
+          />
+
+        );
+        break;
+
+      case 'multiCreatable':
+        options = model.options || [];
+        newOptions = Array.isArray(parentState[model.name]) ?
+          parentState[model.name].map(val => ({ label: val, value: val })) :
+          options;
+
+        options = [...options, ...newOptions];
+        formItem = (
+          <Select.Creatable
+            noResultsText="Sem Resultados"
+            placeholder={model.placeholder || 'multiCreatable'}
+            multi
+            options={options}
+            value={parentState[model.name]}
+            onChange={(value) => {
+              onMultiSelectChange(model.name)(value);
+            }}
+            onBlur={() => {
+              validateField(model.name, parentState[model.name], checkRequirement);
+            }}
+            {...model.inputProps}
           />
 
         );
@@ -124,7 +157,7 @@ function FormItem({
             loadOptions={model.loadOptions}
             backspaceRemoves={model.backspaceRemoves}
             loadingPlaceholder="carregando"
-            {...model.props}
+            {...model.inputProps}
           />
         );
         break;
@@ -143,7 +176,7 @@ function FormItem({
               validateField(model.name, parentState[model.name], checkRequirement);
             }}
             rows={4}
-            {...model.props}
+            {...model.inputProps}
           />
         );
         break;
@@ -159,7 +192,7 @@ function FormItem({
               onDateTimeChange(val, model.name);
               validateField(model.name, parentState[model.name], checkRequirement);
             }}
-            {...model.props}
+            inputProps={model.inputProps}
           />
         );
         break;
@@ -178,7 +211,7 @@ function FormItem({
               onDateTimeChange(val, model.name);
               validateField(model.name, parentState[model.name], checkRequirement);
             }}
-            {...model.props}
+            inputProps={model.inputProps}
           />
         );
         break;
@@ -194,7 +227,7 @@ function FormItem({
               onDateTimeChange(val, model.name);
               validateField(model.name, parentState[model.name], checkRequirement);
             }}
-            {...model.props}
+            inputProps={model.inputProps}
           />
         );
         break;
@@ -202,19 +235,19 @@ function FormItem({
       case 'checkbox':
         formItem = (
           <Col>
-            {keyIndex(model.options, 42).map(options => (
+            {keyIndex(model.options, 42).map(opt => (
               <Checkbox
-                key={options.ID_label}
+                key={opt.ID_label}
                 checkboxClass="icheckbox_square-blue"
-                checked={parentState[model.name] === options.value}
+                checked={parentState[model.name] === opt.value}
                 onChange={() => {
-                  const value = parentState[model.name] === options.value ? '' : options.value;
+                  const value = parentState[model.name] === opt.value ? '' : opt.value;
                   onInputChange(value, model.name);
                   validateField(model.name, parentState[model.name], checkRequirement);
                 }}
                 increaseArea="20%"
-                label={`&nbsp;&nbsp;${options.label}&nbsp;&nbsp;&nbsp;&nbsp;`}
-                {...model.props}
+                label={`&nbsp;&nbsp;${opt.label}&nbsp;&nbsp;&nbsp;&nbsp;`}
+                {...model.inputProps}
               />
             ))}
           </Col>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Button } from 'react-bootstrap';
+import { Row, Col, Button, Tabs, Tab } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import _ from 'lodash';
@@ -26,6 +26,7 @@ const propTypes = {
   // getValues: PropTypes.func,
   saveForm: PropTypes.bool,
   initialData: PropTypes.shape({}),
+  tabs: PropTypes.bool,
   layout: PropTypes.arrayOf(PropTypes.shape({
     title: PropTypes.string,
     grid: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.shape({
@@ -48,16 +49,29 @@ const propTypes = {
       }),
     }))),
   })),
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+    PropTypes.arrayOf(PropTypes.element),
+    PropTypes.element,
+  ]),
 };
 
 const defaultProps = {
-  onSuccess: () => {},
-  onError: () => {},
+  onSuccess: (data, layout) => {
+    console.log('JsonForm.onSuccess.data', data);
+    console.log('JsonForm.onSuccess.layout', layout);
+  },
+  onError: (data, layout) => {
+    console.log('JsonForm.onError.data', data);
+    console.log('JsonForm.onError.layout', layout);
+  },
   multidata: [],
   // getValues: () => {},
   saveForm: false,
   initialData: {},
   displayButtons: true,
+  tabs: false,
   layout: [
     {
       title: 'Text Fields',
@@ -71,7 +85,9 @@ const defaultProps = {
               label: 'Text',
               required: true,
               validation: (val) => {
-                if (val.length < 10) {
+                if (!val) {
+                  return { valid: false, message: 'erro inesperado' };
+                } else if (val.length < 10) {
                   return { valid: false, message: 'O campo nome deve conter mais de 10 caracteres' };
                 }
                 return { valid: true, message: 'ok' };
@@ -218,6 +234,7 @@ const defaultProps = {
       ],
     },
   ],
+  children: null,
 };
 
 class JsonForm extends Component {
@@ -253,6 +270,7 @@ class JsonForm extends Component {
     this.listFormFields = this.listFormFields.bind(this);
     this.extractModelFromLayout = this.extractModelFromLayout.bind(this);
     this.extractLayoutFromFormData = this.extractLayoutFromFormData.bind(this);
+    this.formContent = this.formContent.bind(this);
   }
 
   componentWillMount() {
@@ -327,7 +345,7 @@ class JsonForm extends Component {
       area.grid.forEach((rows) => {
         rows.forEach((row) => {
           if (row.model) {
-            model[row.model.name] = row.model.value || '';
+            model[row.model.name] = row.model.value === undefined ? '' : row.model.value;
             model[`validation_${row.model.name}`] = {};
             validation[row.model.name] = {
               rule: row.model.validation || (() => ({ valid: true, message: 'ok' })),
@@ -397,12 +415,12 @@ class JsonForm extends Component {
             const [index, multfield] = row.model.name.split('.grid.')[0].split('.').reverse();
             if (multidata.indexOf(multfield) > -1 && formData[multfield]) {
               try {
-                row.model.value = formData[multfield][index][newName] || '';
+                row.model.value = formData[multfield][index][newName] === undefined ? '' : formData[multfield][index][newName];
               } catch (error) {
                 row.model.value = '';
               }
             } else {
-              row.model.value = formData[newName] || '';
+              row.model.value = formData[newName] === undefined ? '' : formData[newName];
             }
             row.model.name = newName;
           }
@@ -516,7 +534,7 @@ class JsonForm extends Component {
         result.requirementError = validation[name].required && value === '';
         if (requirementMessage && result.requirementError) {
           result.valid = false;
-          result.message = 'esse campo é obrigatório';
+          result.message = 'este campo é obrigatório';
         }
         this.setState({
           [`validation_${name}`]: result,
@@ -564,22 +582,37 @@ class JsonForm extends Component {
     });
   }
 
-  render() {
+  formContent({ area, multidata, utilitiesNewLayout }) {
     return (
-      <form >
-        <Row>
-          <Col md={9}>
-            {keyIndex(JsonForm
-            .treeNamingFields(this
-            .extractLayoutFromFormData((this.state.utilities_formData
-              || this.props.initialData), this.state.utilities_newLayout)), 1)
-            .map(area => (
+      <div>
+        {area.grid && <FormArea
+          area={area}
+          title={area.title}
+          id={area.ID_grid}
+          bsStyle={area.bsStyle}
+          parentState={this.state}
+          validateField={this.validateField}
+          onChange={this.onChange}
+          onSelectChange={this.onSelectChange}
+          onMultiSelectChange={this.onMultiSelectChange}
+          onAsyncChange={this.onAsyncChange}
+          onDateTimeChange={this.onDateTimeChange}
+          onInputChange={this.onInputChange}
+          requirementMessage={this.props.saveForm}
+        />}
+
+        {area.content && area.content()}
+
+        {multidata.map((multi, i) => (
+          area[multi] &&
+          <FormPanel title="itens" ID={area[`ID_${multi}`]}>
+            {keyIndex(area[multi], 5 + i).map((subArea, j) => (
               <div>
-                {area.grid && <FormArea
-                  area={area}
-                  title={area.title}
-                  id={area.ID_grid}
-                  bsStyle={area.bsStyle}
+                <FormArea
+                  area={subArea}
+                  title={subArea.title}
+                  id={subArea.ID_grid}
+                  bsStyle={subArea.bsStyle}
                   parentState={this.state}
                   validateField={this.validateField}
                   onChange={this.onChange}
@@ -589,76 +622,102 @@ class JsonForm extends Component {
                   onDateTimeChange={this.onDateTimeChange}
                   onInputChange={this.onInputChange}
                   requirementMessage={this.props.saveForm}
-                />}
+                >
 
-                {this.props.multidata.map((multi, i) => (
-                  area[multi] &&
-                  <FormPanel title="itens" ID={area[`ID_${multi}`]}>
-                    {keyIndex(area[multi], 5 + i).map((subArea, j) => (
-                      <div>
-                        <FormArea
-                          area={subArea}
-                          title={subArea.title}
-                          id={subArea.ID_grid}
-                          bsStyle={subArea.bsStyle}
-                          parentState={this.state}
-                          validateField={this.validateField}
-                          onChange={this.onChange}
-                          onSelectChange={this.onSelectChange}
-                          onMultiSelectChange={this.onMultiSelectChange}
-                          onAsyncChange={this.onAsyncChange}
-                          onDateTimeChange={this.onDateTimeChange}
-                          onInputChange={this.onInputChange}
-                          requirementMessage={this.props.saveForm}
-                        >
-
-                          {
-                            area[multi].length > 1 &&
-                            <div className="box-footer text-right">
-                              <Button
-                                bsStyle="primary"
-                                className="btn-flat btn-danger"
-                                onClick={() => {
-                                  this.removeMultidata(multi, j, this.state.utilities_newLayout);
-                                }}
-                              >
-                                <i className="fa fa-times" /> Remover
-                              </Button>
-                            </div>
-                          }
-                        </FormArea>
-                        <br />
-                      </div>
-                    ))}
-                    <Col xs={12} md={12} className="text-center">
-                      <div className="box-footer">
-                        <Button
-                          bsStyle="primary"
-                          className="btn-flat"
-                          onClick={() => {
-                            this.addMultidata(multi, this.state.utilities_newLayout);
-                          }}
-                        >
-                          <i className="fa fa-plus" /> Adicionar
-                        </Button>
-                      </div>
-                    </Col>
-                  </FormPanel>
-                ))}
-
-
+                  {
+                    area[multi].length > 1 &&
+                    <div className="box-footer text-right">
+                      <Button
+                        bsStyle="primary"
+                        className="btn-flat btn-danger"
+                        onClick={() => {
+                          this.removeMultidata(multi, j, utilitiesNewLayout);
+                        }}
+                      >
+                        <i className="fa fa-times" /> Remover
+                      </Button>
+                    </div>
+                  }
+                </FormArea>
+                <br />
               </div>
             ))}
+            <Col xs={12} md={12} className="text-center">
+              <div className="box-footer">
+                <Button
+                  bsStyle="primary"
+                  className="btn-flat"
+                  onClick={() => {
+                    this.addMultidata(multi, utilitiesNewLayout);
+                  }}
+                >
+                  <i className="fa fa-plus" /> Adicionar
+                </Button>
+              </div>
+            </Col>
+          </FormPanel>
+        ))}
+      </div>
+    );
+  }
+
+  render() {
+    const { children } = this.props;
+
+    const childrenWithProps = React.Children.map(children, child =>
+      React.cloneElement(child, {
+        JF_clearForm: this.clearForm,
+        JF_saveForm: this.saveForm,
+        JF_getFormData: this.listFormFields,
+      }));
+
+    return (
+      <form >
+        <Row>
+          <Col md={9}>
+
+            {this.props.tabs &&
+            <Tabs id="uncontrolled-tab-example">
+                {keyIndex(JsonForm
+                .treeNamingFields(this
+                .extractLayoutFromFormData((this.state.utilities_formData
+                  || this.props.initialData), this.state.utilities_newLayout)), 1)
+                .map((area, i) => (
+                  <Tab eventKey={area.tab || i} title={area.tabTitle}>
+                    <this.formContent
+                      key={area.ID_grid || area.ID_title}
+                      area={area}
+                      multidata={this.props.multidata}
+                      utilitiesNewLayout={this.state.utilities_newLayout}
+                    />
+                  </Tab>
+                ))}
+            </Tabs>}
+
+            {!this.props.tabs &&
+            <div>
+                {keyIndex(JsonForm
+                .treeNamingFields(this
+                .extractLayoutFromFormData((this.state.utilities_formData
+                  || this.props.initialData), this.state.utilities_newLayout)), 1)
+                .map(area => (
+                  <this.formContent
+                    key={area.ID_grid || area.ID_title}
+                    area={area}
+                    multidata={this.props.multidata}
+                    utilitiesNewLayout={this.state.utilities_newLayout}
+                  />
+                ))}
+            </div>}
+
           </Col>
-          {
-            this.props.displayButtons &&
-            <Col md={3}>
+          <Col md={3}>
+            {
+              this.props.displayButtons &&
               <div className="box box-primary">
                 <div className="box-header">
-                  <h3 className="box-title">Informações e Ações</h3>
+                  <h3 className="box-title">Ações</h3>
                 </div>
-                {/* <div className="box-body">
-                </div> */}
                 <div className="box-footer text-right">
                   <Button
                     bsStyle="primary"
@@ -677,8 +736,9 @@ class JsonForm extends Component {
                   </Button>
                 </div>
               </div>
-            </Col>
-          }
+            }
+            {childrenWithProps}
+          </Col>
         </Row>
       </form>
     );
