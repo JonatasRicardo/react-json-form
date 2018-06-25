@@ -21,6 +21,7 @@ const propTypes = {
   onDateTimeChange: PropTypes.func,
   onInputChange: PropTypes.func,
   checkRequirement: PropTypes.bool,
+  listFormFields: PropTypes.func,
 };
 
 const defaultProps = {
@@ -31,6 +32,7 @@ const defaultProps = {
   onDateTimeChange: () => { },
   onInputChange: () => { },
   checkRequirement: true,
+  listFormFields: () => {},
 };
 
 function FormItem({
@@ -44,6 +46,7 @@ function FormItem({
   onDateTimeChange,
   onInputChange,
   checkRequirement,
+  listFormFields,
 }) {
   const { valid, message } = parentState[`validation_${model.name}`];
   const hasError = (valid === false);
@@ -51,6 +54,19 @@ function FormItem({
   let formItem = null;
   let options;
   let newOptions;
+  let inputProps = model.inputProps || {};
+  let inputConditionalProps = {};
+  const formFields = listFormFields();
+
+  try {
+    if (model.inputPropsConditions) {
+      inputConditionalProps = model.inputPropsConditions(formFields);
+      inputProps = { ...inputProps, ...inputConditionalProps };
+    }
+  } catch (error) {
+    console.log('JsonForm.FormItem.inputPropsConditions error:', error);
+  }
+
   if (model.type) {
     switch (model.type) {
       case 'text':
@@ -65,7 +81,7 @@ function FormItem({
             onBlur={() => {
               validateField(model.name, parentState[model.name], checkRequirement);
             }}
-            {...model.inputProps}
+            {...inputProps}
           />
         );
         break;
@@ -83,7 +99,7 @@ function FormItem({
             onBlur={() => {
               validateField(model.name, parentState[model.name], checkRequirement);
             }}
-            {...model.inputProps}
+            {...inputProps}
           />
         );
         break;
@@ -108,7 +124,7 @@ function FormItem({
             onBlur={() => {
               validateField(model.name, parentState[model.name], checkRequirement);
             }}
-            {...model.inputProps}
+            {...inputProps}
           />
 
         );
@@ -134,7 +150,7 @@ function FormItem({
             onBlur={() => {
               validateField(model.name, parentState[model.name], checkRequirement);
             }}
-            {...model.inputProps}
+            {...inputProps}
           />
 
         );
@@ -157,7 +173,7 @@ function FormItem({
             loadOptions={model.loadOptions}
             backspaceRemoves={model.backspaceRemoves}
             loadingPlaceholder="carregando"
-            {...model.inputProps}
+            {...inputProps}
           />
         );
         break;
@@ -176,7 +192,7 @@ function FormItem({
               validateField(model.name, parentState[model.name], checkRequirement);
             }}
             rows={4}
-            {...model.inputProps}
+            {...inputProps}
           />
         );
         break;
@@ -247,7 +263,7 @@ function FormItem({
                 }}
                 increaseArea="20%"
                 label={`&nbsp;&nbsp;${opt.label}&nbsp;&nbsp;&nbsp;&nbsp;`}
-                {...model.inputProps}
+                {...inputProps}
               />
             ))}
           </Col>
@@ -261,7 +277,7 @@ function FormItem({
   }
 
   return (
-    <div className={`form-group buildFormItem ${statusClass}`}>
+    <div className={`form-group buildFormItem ${statusClass}`} {...inputProps}>
       <ControlLabel>{model.label} {model.required && '*'}</ControlLabel>{formItem}
       <span className="help-block">{hasError && message}</span>
     </div>
