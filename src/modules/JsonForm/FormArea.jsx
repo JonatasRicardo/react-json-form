@@ -16,6 +16,7 @@ const propTypes = {
   onAsyncChange: PropTypes.func,
   onDateTimeChange: PropTypes.func,
   onInputChange: PropTypes.func,
+  listFormFields: PropTypes.func,
   requirementMessage: PropTypes.bool,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
@@ -32,6 +33,7 @@ const defaultProps = {
   onAsyncChange: () => {},
   onDateTimeChange: () => {},
   onInputChange: () => {},
+  listFormFields: () => {},
   requirementMessage: false,
   children: null,
 };
@@ -48,6 +50,7 @@ function FormArea({
   onInputChange,
   requirementMessage,
   children,
+  listFormFields,
 }) {
   return (
     <FormPanel bsStyle={area.bsStyle} ID={area.ID_grid} title={area.title}>
@@ -66,6 +69,7 @@ function FormArea({
                 onDateTimeChange={onDateTimeChange}
                 onInputChange={onInputChange}
                 requirementMessage={requirementMessage}
+                listFormFields={listFormFields}
               />}
               {col.custom && <col.custom
                 model={col.model}
@@ -78,6 +82,7 @@ function FormArea({
                 onDateTimeChange={onDateTimeChange}
                 onInputChange={onInputChange}
                 requirementMessage={requirementMessage}
+                listFormFields={listFormFields}
               />}
             </Col>
           ))}
