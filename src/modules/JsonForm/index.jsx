@@ -21,9 +21,9 @@ const validationExemple = (val) => {
 const propTypes = {
   onSuccess: PropTypes.func,
   onError: PropTypes.func,
+  onFormUpdate: PropTypes.func,
   multidata: PropTypes.arrayOf(PropTypes.string),
   displayButtons: PropTypes.bool,
-  // getValues: PropTypes.func,
   saveForm: PropTypes.bool,
   initialData: PropTypes.shape({}),
   tabs: PropTypes.bool,
@@ -67,11 +67,12 @@ const defaultProps = {
     console.log('JsonForm.onError.layout', layout);
   },
   multidata: [],
-  // getValues: () => {},
   saveForm: false,
   initialData: {},
   displayButtons: true,
   tabs: false,
+  onFormUpdate: () => {},
+  // onFormUpdate: (data) => { console.log('onFormUpdate', data); }
   layout: [
     {
       title: 'Text Fields',
@@ -249,6 +250,22 @@ class JsonForm extends Component {
     return unflatten(flatLayout);
   }
 
+  static emptyValueOfType(type) {
+    let emptyValue = '';
+    switch (type) {
+      case 'multi':
+        emptyValue = [];
+        break;
+      case 'multiCreatable':
+        emptyValue = [];
+        break;
+      default:
+        emptyValue = '';
+        break;
+    }
+    return emptyValue;
+  }
+
   constructor(props) {
     super(props);
 
@@ -287,6 +304,11 @@ class JsonForm extends Component {
     if (props.saveForm) {
       this.saveForm();
     }
+  }
+
+  componentDidUpdate() {
+    const formData = this.listFormFields();
+    this.props.onFormUpdate(formData);
   }
 
   onSelectChange(name) {
@@ -332,9 +354,7 @@ class JsonForm extends Component {
   extractModelFromLayout(_layout, multidata = []) {
     const model = {};
     const validation = {};
-    console.log('extractModelFromLayout::_layout', _layout);
     const layout = JsonForm.treeNamingFields(_layout);
-    console.log('extractModelFromLayout::layout', layout);
     if (this.state) {
       Object.keys(this.state).forEach((key) => {
         model[key] = null;
@@ -345,7 +365,10 @@ class JsonForm extends Component {
       area.grid.forEach((rows) => {
         rows.forEach((row) => {
           if (row.model) {
-            model[row.model.name] = row.model.value === undefined ? '' : row.model.value;
+            model[row.model.name] =
+              row.model.value === undefined ?
+                JsonForm.emptyValueOfType(row.model.type) :
+                row.model.value;
             model[`validation_${row.model.name}`] = {};
             validation[row.model.name] = {
               rule: row.model.validation || (() => ({ valid: true, message: 'ok' })),
@@ -415,12 +438,16 @@ class JsonForm extends Component {
             const [index, multfield] = row.model.name.split('.grid.')[0].split('.').reverse();
             if (multidata.indexOf(multfield) > -1 && formData[multfield]) {
               try {
-                row.model.value = formData[multfield][index][newName] === undefined ? '' : formData[multfield][index][newName];
+                row.model.value = formData[multfield][index][newName] === undefined ?
+                  JsonForm.emptyValueOfType(row.model.type) :
+                  formData[multfield][index][newName];
               } catch (error) {
                 row.model.value = '';
               }
             } else {
-              row.model.value = formData[newName] === undefined ? '' : formData[newName];
+              row.model.value = formData[newName] === undefined ?
+                JsonForm.emptyValueOfType(row.model.type) :
+                formData[newName];
             }
             row.model.name = newName;
           }
@@ -599,6 +626,7 @@ class JsonForm extends Component {
           onDateTimeChange={this.onDateTimeChange}
           onInputChange={this.onInputChange}
           requirementMessage={this.props.saveForm}
+          listFormFields={this.listFormFields}
         />}
 
         {area.content && area.content()}
@@ -622,6 +650,7 @@ class JsonForm extends Component {
                   onDateTimeChange={this.onDateTimeChange}
                   onInputChange={this.onInputChange}
                   requirementMessage={this.props.saveForm}
+                  listFormFields={this.listFormFields}
                 >
 
                   {
@@ -677,7 +706,7 @@ class JsonForm extends Component {
           <Col md={9}>
 
             {this.props.tabs &&
-            <Tabs id="uncontrolled-tab-example">
+            <Tabs id="uncontrolled-tab-example" className="nav-tabs-custom">
                 {keyIndex(JsonForm
                 .treeNamingFields(this
                 .extractLayoutFromFormData((this.state.utilities_formData
