@@ -38,8 +38,9 @@ Para demonstrar as possibilidades do **React Json Form** se não for passado nen
 | Prop   |   Type   |  default  |    Descrição      |  Exemplo |
 |--------|----------|-----------|-------------------|------|
 | layout |   *array*   |      |  Array objetos que definem as áreas, os campos e as condições de validação. | <a href="#layout">Mais detalhes</a>   |
-| onSuccess |   *function*   |      |  função que ao formulário passar por todas as validações recebe o json do formulário preenchido e o novo layout com os valores atualizados   |  `(data, layout) => { cosole.log(data, layout); }` |
-| onError |   *function*   |      | função que ao formulário falhar em validação recebe o json do formulário preenchido e o novo layout com os valores atualizados |  `(data, layout) => { cosole.log(data, layout); }` |
+| onSuccess |   *function*   |      |  função que ao formulário passar por todas as validações recebe o json do formulário preenchido e o novo layout com os valores atualizados   |  ```(data, layout) => { cosole.log(data, layout); }``` |
+| onError |   *function*   |      | função que ao formulário falhar em validação recebe o json do formulário preenchido e o novo layout com os valores atualizados |  `(data) => { cosole.log(data); }` |
+| onFormUpdate |   *function*   |      | função que a cada atualização do formulário o json do formulário preenchido |  `(data, layout) => { cosole.log(data, layout); }` |
 | initialData |   *object*   |     | Json com os valores iniciais do formulário | `{name: "Foo", phone: "bar"}` |
 | displayButtons |   *boolean*   |   `true`  | define a exibição ou não dos botões padrão do componente (Limpar e Salvar)  | `true` |
 | tabs |   *boolean*   |   `false`  | define o uso ou não de abas no componente.  <a href="#tabs">Mais detalhes</a>| `true` |
@@ -100,11 +101,11 @@ Abaixo podemos ver a estrutura de uma área:
         <p>
           Representa as linhas (Row) pertencentes à área
         </p>
-        <pre><code>[[/* linha 1 */], [/* linha 2 */], [/* linha N */]]</code></pre>
+        <div class="highlight highlight-source-js"><pre><code>[[/* linha 1 */], [/* linha 2 */], [/* linha N */]]</code></pre></div>
         <h4>Itens do array</h4>
         <h5>- Linhas (Row):</h5>
         cada linha pode conter até 12 colunas. E é nesse nível onde se define as características de cada campo do forumário 
-  <pre><code>[
+<div class="highlight highlight-source-js"><pre><code>[
     [
       // linha 1
       {
@@ -126,7 +127,7 @@ Abaixo podemos ver a estrutura de uma área:
         colProps: { md: 6 },
       },
     ],
-  ]</code></pre>
+  ]</code></pre></div>
         <strong>- Propriedades das linhas:</strong>
         <table>
           <thead>
@@ -248,14 +249,14 @@ Model é uma propriedade que define as características e comportamento de um ca
           <strong>Saída</strong>: objeto com o formato <code>{ valid: /*boolean*/, message: /*string*/ }</code>
         </p>
         <p>
-<pre><code>
+<div class="highlight highlight-source-js"><pre><code>
 (val) => {
   if (val.length < 10) {
     return { valid: false, message: 'O campo nome deve conter mais de 10 caracteres' };
   }
   return { valid: true, message: 'ok' };
 }
-</code></pre>
+</code></pre></div>
         </p>
         <p></p>
       </td>
@@ -265,7 +266,30 @@ Model é uma propriedade que define as características e comportamento de um ca
       <td><i>object</i></td>
       <td>
         <p>Propriedades extras para a tag <code>&lt;input /></code></p>
-        <pre><code>{disabled: true}</code></pre>
+        <div class="highlight highlight-source-js"><pre><code>{disabled: true}</code></pre></div>
+      </td>
+    </tr>
+    <tr>
+      <td>inputPropsConditions</td>
+      <td><i>function</i></td>
+      <td>
+        <p>Função para definir as extras para a tag <code>&lt;input /></code></p>
+        <p>
+          <strong>Entrada</strong>: parâmetro <code>object</code> os valores do formulário<br/>
+          <strong>Saída</strong>: objeto com as propriedades extras do campo em questão.
+        </p>
+        <p>
+<div class="highlight highlight-source-js"><pre><code>
+(data) => {
+  if(data.postalCode === ""){
+    return {disabled: true, style: {opacity: 0.5}};
+  } else {
+    return {};
+  }
+}
+</code></pre></div>
+        </p>
+        <p></p>
       </td>
     </tr>
     <tr>
@@ -286,12 +310,12 @@ Model é uma propriedade que define as características e comportamento de um ca
       <td>
         <p>Opções de valores pre-estabelecidas no formato  <code>{ label: /*string*/, value: /*string ou boolean*/ }</code>.
         </p>
-<pre><code>
+<div class="highlight highlight-source-js"><pre><code>
 [
   { label: 'Sim', value: 'sim' },
   { label: 'Não', value: 'nao' },
 ],
-</code></pre>
+</code></pre></div>
       </td>
     </tr>
     <tr>
@@ -312,7 +336,7 @@ Model é uma propriedade que define as características e comportamento de um ca
           <strong>Entrada</strong>: parâmetro <code>string</code> com o valor do atual do campo<br/>
           <strong>Saída</strong>: uma Promise resolvida retornando um objeto com o formato <code>{ options: /*array of objects*/}
         </p>
-<pre><code>
+<div class="highlight highlight-source-js"><pre><code>
 loadOptions: (input) => {
   if (!input) {
     return Promise.resolve({ options: [] });
@@ -323,7 +347,7 @@ loadOptions: (input) => {
       return { options: json.data.items };
     });
 },
-</code></pre>
+</code></pre></div>
       </td>
     </tr>
     <tr>
@@ -349,12 +373,12 @@ loadOptions: (input) => {
       <td><i>function</i></td>
       <td>
         <p>Define uma ação extra selecionar uma das opções disponíveis</p>
-<pre><code>
+<div class="highlight highlight-source-js"><pre><code>
 onValueClick: (value, event) => {
   console.log('asyncSelect::value', value);
   console.log('asyncSelect::event', event);
 },
-</code></pre>
+</code></pre></div>
       </td>
     </tr>
   </tbody>
@@ -363,7 +387,7 @@ onValueClick: (value, event) => {
 ### Layout Exemplo
 <p>Uma boa prática presente no exemplo abaixo é separar o <strong>model</strong> e referenciá-lo dentro do layout.<p>
 
-```
+```js
 const model = {
   tipoRequisicao: {
     type: 'select',
@@ -543,7 +567,7 @@ Caso queira renderizar um componente dentro do grid, ou deseja criar um campo pe
 
 **Exemplo de campo personalizado:**
 
-```
+```js
 function CustomField({
   model,
   parentState,
@@ -555,6 +579,7 @@ function CustomField({
   onDateTimeChange,
   onInputChange,
   checkRequirement,
+  listFormFields,
 }) {
   return (
     <Select
@@ -576,7 +601,7 @@ function CustomField({
 
 **inserindo campo personalizado:**
 
-```
+```js
 <JsonForm
   layout={[{
     title: 'Processo para Contratação',
@@ -607,7 +632,7 @@ Existem 3 propriedades inserida à todos os filhos que permitem que isso aconte�
 
 **Exemplo**
 
-```
+```js
 function ExtraInfo({
   JF_clearForm,
   JF_saveForm,
@@ -651,7 +676,7 @@ function ExtraInfo({
 }
 ```
 
-```
+```js
 <JsonForm
   layout={this.state.layout}
   initialData={this.props.data}
