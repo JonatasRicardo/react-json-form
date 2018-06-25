@@ -8,24 +8,24 @@ ___
 
 
 ## Componente
-```
+```js
 import JsonForm from 'react-json-form';
 ```
 ## Estilo
 Você pode importar o **Bootstrap**, **Font Awesome** e **Admin Lte** separadamente de acordo com necessidade do seu projeto ou importar o arquivos `default.css` disponível no módulo.
-```
+```js
 import 'react-json-form/dist/JsonForm/styles/defaults.css';
 ```
 
 ## Demonstração Básica 
 Para demonstrar as possibilidades do **React Json Form** se não for passado nenhum parâmetro ao componente ele irá renderizar um formulário de exemplo.
-```
+```js
 <JsonForm />
 ```
 ![React Json Form Exemple](./react-json-form-exemple.png)
 
 ## Exemplo
-```
+```js
 <JsonForm
     layout={this.state.layout}
     onSuccess={(data, layout) => { this.onSuccess(data, layout); }}
@@ -57,11 +57,13 @@ ___
 
 ### Áreas
   Representa as seções do formulários. Cada área é um objeto dentro do array.
-  <pre><code>&lt;JsonForm layout={[
+```js
+<JsonForm layout={[
     {/* área 1 */},
     {/* área 2 */},
     {/* área N */},
-]} /></code></pre>
+]} />
+```
 
 Abaixo podemos ver a estrutura de uma área:
 - Área 
@@ -511,7 +513,7 @@ const model = {
   },
 };
 ```
-```
+```js
 const layout = [
   {
     title: 'Processo para Contratação',
